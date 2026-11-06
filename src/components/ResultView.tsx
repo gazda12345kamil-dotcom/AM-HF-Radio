@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CAR_CLASS_LABEL, WORKSHOP_LABEL } from "@/lib/pricing/data";
 import { URGENCY, VERDICT, formatDate, zl, zlRange } from "@/lib/format";
 import type { AnalysisResult, LineResult } from "@/lib/types";
+import { partsSearchLinks } from "@/lib/shop-links";
 import { PriceBar, VerdictBadge } from "./Verdict";
 
 const SOURCE_LABEL: Record<LineResult["source"], string> = {
@@ -25,8 +26,9 @@ function summaryText(r: AnalysisResult): string {
   ].join("\n");
 }
 
-function Line({ line }: { line: LineResult }) {
+function Line({ line, vehicle }: { line: LineResult; vehicle: string | null }) {
   const [open, setOpen] = useState(false);
+  const shops = partsSearchLinks(line, vehicle);
   return (
     <li className="border-t border-slate-100 py-4 first:border-t-0">
       <button type="button" onClick={() => setOpen(!open)} className="w-full text-left" aria-expanded={open}>
@@ -43,6 +45,16 @@ function Line({ line }: { line: LineResult }) {
         <PriceBar charged={line.charged} range={line.expected} verdict={line.verdict} />
         <p className="mt-2 text-sm font-medium text-brand-700">{open ? "Zwiń szczegóły ▲" : "Co to za naprawa? ▼"}</p>
       </button>
+      {shops.length > 0 && (
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
+          <span>Porównaj ceny części:</span>
+          {shops.map((s) => (
+            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="font-medium text-brand-700 underline underline-offset-2">
+              {s.label} ↗
+            </a>
+          ))}
+        </p>
+      )}
 
       {open && (
         <div className="mt-3 space-y-3 rounded-xl bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">
@@ -160,7 +172,7 @@ export function ResultView({ result, onNew }: { result: AnalysisResult; onNew?: 
         <h2 className="text-lg font-bold">Pozycje z wyceny</h2>
         <ul className="mt-2">
           {result.lines.map((l, i) => (
-            <Line key={i} line={l} />
+            <Line key={i} line={l} vehicle={result.vehicle} />
           ))}
         </ul>
       </section>

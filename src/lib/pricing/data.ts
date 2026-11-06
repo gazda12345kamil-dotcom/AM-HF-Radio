@@ -335,3 +335,29 @@ const BY_KEY = new Map(REPAIRS.map((r) => [r.key, r]));
 export function getRepair(key: string | null | undefined): RepairRef | undefined {
   return key ? BY_KEY.get(key) : undefined;
 }
+
+/** Fraza do wyszukiwania części w sklepach (dla napraw, które mają części). */
+export const PARTS_QUERY: Record<string, string> = {
+  "klocki-przod": "klocki hamulcowe przód",
+  "klocki-tarcze-przod": "tarcze klocki hamulcowe przód komplet",
+  "klocki-tarcze-tyl": "tarcze klocki hamulcowe tył komplet",
+  "olej-filtr": "olej silnikowy filtr oleju zestaw",
+  "filtr-powietrza": "filtr powietrza",
+  "filtr-kabinowy": "filtr kabinowy",
+  "filtr-paliwa": "filtr paliwa",
+  "plyn-hamulcowy": "płyn hamulcowy DOT4",
+  rozrzad: "zestaw rozrządu z pompą wody",
+  sprzeglo: "zestaw sprzęgła",
+  dwumas: "koło dwumasowe",
+  "amortyzatory-przod": "amortyzatory przód",
+  "amortyzatory-tyl": "amortyzatory tył",
+  wahacz: "wahacz przedni",
+  "lacznik-stabilizatora": "łącznik stabilizatora",
+  "koncowka-drazka": "końcówka drążka kierowniczego",
+  "lozysko-kola": "łożysko koła piasta",
+  akumulator: "akumulator",
+  "swiece-zaplonowe": "świece zapłonowe",
+  "swiece-zarowe": "świece żarowe",
+  "pasek-osprzetu": "pasek wielorowkowy napinacz",
+  termostat: "termostat",
+};
