@@ -12,7 +12,9 @@ export default function HistoriaPage() {
   const [items, setItems] = useState<AnalysisResult[] | null>(null);
   const [open, setOpen] = useState<AnalysisResult | null>(null);
 
-  useEffect(() => setItems(loadHistory()), []);
+  useEffect(() => {
+    setItems(loadHistory());
+  }, []);
 
   if (open) {
     return (

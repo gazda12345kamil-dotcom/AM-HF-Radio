@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ResultView } from "@/components/ResultView";
 import { CAR_CLASS_LABEL, REPAIRS, WORKSHOP_LABEL, getRepair } from "@/lib/pricing/data";
+import { analyze, getStatus } from "@/lib/api";
+import type { AnalyzeBody } from "@/lib/analyze-request";
 import { countPhotoCheck, currentPlan, remainingPhotoChecks, saveToHistory } from "@/lib/storage";
 import type { AnalysisResult, CarClass, WorkshopType } from "@/lib/types";
 
@@ -39,9 +41,8 @@ export default function WycenaPage() {
 
   useEffect(() => {
     setRemaining(remainingPhotoChecks());
-    fetch("/api/status")
-      .then((r) => r.json())
-      .then((s: { ai: boolean }) => setAiOn(s.ai))
+    getStatus()
+      .then((s) => setAiOn(s.ai))
       .catch(() => setAiOn(false));
   }, []);
 
@@ -59,18 +60,11 @@ export default function WycenaPage() {
     }
   };
 
-  const send = async (payload: object) => {
+  const send = async (payload: AnalyzeBody) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = (await res.json()) as { result?: AnalysisResult; error?: string };
-      if (!res.ok || !data.result) throw new Error(data.error || "Coś poszło nie tak.");
-      const r = data.result;
+      const r = await analyze(payload);
       if (r.source === "zdjecie" && !r.demo) {
         countPhotoCheck();
         setRemaining(remainingPhotoChecks());

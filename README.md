@@ -24,7 +24,12 @@ npm test         # testy
 npm run lint     # sprawdzenie typów
 npm run build    # wersja produkcyjna
 npm start        # uruchomienie wersji produkcyjnej
+npm run build:static  # wersja testowa w jednym pliku: dist-static/index.html
 ```
+
+## Wersja testowa w jednym pliku
+
+`npm run build:static` buduje całą aplikację do jednego pliku HTML (`dist-static/index.html`), który działa bez serwera: ocena cen i VIN liczone są w przeglądarce, a odczyt zdjęć jest w trybie demo. Kod w katalogu `static/` podmienia tylko połączenie z serwerem (`src/lib/api.ts` → `static/api-local.ts`) i nawigację Next.js na nawigację po `#adresach`.
 
 ## Podłączenie AI (OpenRouter)
 
@@ -67,6 +72,8 @@ src/lib/pricing/    baza cen i silnik oceny
 src/lib/ai/         odczyt zdjęć przez OpenRouter + tryb demo
 src/lib/vin.ts      dekoder VIN
 src/lib/plans.ts    plany i limity
+src/lib/analyze-request.ts  wspólna logika oceny (serwer i wersja testowa)
+static/             wersja testowa w jednym pliku
 src/components/     wspólne elementy wyglądu
 tests/              testy
 ```

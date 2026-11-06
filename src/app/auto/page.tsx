@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { VinBasic, VinOnline } from "@/lib/vin";
-
-type VinResponse = { basic: VinBasic; online: VinOnline | null; onlineError: string | null };
+import { lookupVin } from "@/lib/api";
+import type { VinOnline } from "@/lib/vin";
+import type { VinResponse } from "@/lib/vin-check";
 
 const ONLINE_LABELS: [keyof VinOnline, string][] = [
   ["make", "Marka"],
@@ -38,8 +38,7 @@ export default function AutoPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/vin?vin=${encodeURIComponent(vin)}`);
-      setData((await res.json()) as VinResponse);
+      setData(await lookupVin(vin));
     } catch {
       setError("Nie udało się sprawdzić numeru. Sprawdź połączenie z internetem.");
     } finally {
